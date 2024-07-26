@@ -8,8 +8,8 @@ CERTS_DIR="${CERTS_DIR:-/certs}"
 
 # Function to extract certificates
 extract_certs() {
-    cat "$ACME_JSON_PATH" | jq -r '.letsencrypt.Certificates[] | select(.domain.main=="'"$DOMAIN"'") | .certificate' | base64 -d > "$CERTS_DIR/fullchain.pem"
-    cat "$ACME_JSON_PATH" | jq -r '.letsencrypt.Certificates[] | select(.domain.main=="'"$DOMAIN"'") | .key' | base64 -d > "$CERTS_DIR/privkey.pem"
+    cat "$ACME_JSON_PATH" | jq -r --arg DOMAIN "$DOMAIN" '.["dns-cloudflare"].Certificates[] | select(.domain.main==$DOMAIN) | .certificate' | base64 -d > "$CERTS_DIR/fullchain.pem"
+    cat "$ACME_JSON_PATH" | jq -r --arg DOMAIN "$DOMAIN" '.["dns-cloudflare"].Certificates[] | select(.domain.main==$DOMAIN) | .key' | base64 -d > "$CERTS_DIR/privkey.pem"
 }
 
 # Initial extraction of certificates
