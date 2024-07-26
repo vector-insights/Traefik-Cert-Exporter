@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  certs-exporter:
+    image: ghcr.io/yourusername/certs-exporter:latest
+    volumes:
+      - /path/to/acme.json:/path/to/acme.json:ro
+      - certs-volume:/certs
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /certs/fullchain.pem && test -f /certs/privkey.pem"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  otel-exporter:
+    image: otel/opentelemetry-collector:latest
+    depends_on:
+      certs-exporter:
+        condition: service_healthy
+    volumes:
+      - certs-volume:/certs
+    environment:
+      - OTEL_EXPORTER_PATH=/certs
+
+volumes:
+  certs-volume:
