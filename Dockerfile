@@ -2,7 +2,7 @@
 FROM alpine:3.20
 
 # Install necessary tools
-RUN apk add --no-cache jq bash
+RUN apk add --no-cache jq bash inotify-tools
 
 # Create directory for scripts and certificates
 RUN mkdir -p /scripts /certs
