@@ -3,6 +3,10 @@ version: '3.8'
 services:
   certs-exporter:
     image: ghcr.io/yourusername/certs-exporter:latest
+    environment:
+      - ACME_JSON_PATH=/path/to/acme.json
+      - CERTS_DIR=/certs
+      - DOMAIN=yourdomain.com
     volumes:
       - /path/to/acme.json:/path/to/acme.json:ro
       - certs-volume:/certs
