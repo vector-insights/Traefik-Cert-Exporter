@@ -11,7 +11,7 @@ services:
       - /path/to/acme.json:/path/to/acme.json:ro
       - certs-volume:/certs
     healthcheck:
-      test: ["CMD-SHELL", "test -f /certs/fullchain.pem && test -f /certs/privkey.pem"]
+      test: ["CMD-SHELL", "test -f /certs/fullchain.pem && test -f /certs/privkey.pem && test -f /certs/ca.pem"]
       interval: 30s
       timeout: 10s
       retries: 5
