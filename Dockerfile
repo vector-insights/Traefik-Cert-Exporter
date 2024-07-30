@@ -1,12 +1,13 @@
-
 FROM alpine:3.20
 
 # Install necessary packages
-RUN apk add --no-cache bash jq inotify-tools
+RUN apk add --no-cache bash jq inotify-tools dos2unix
 
 # Copy the script into the container
 COPY update-certs.sh /usr/local/bin/update-certs.sh
-RUN chmod +x /usr/local/bin/update-certs.sh
+
+# Convert line endings to Unix format and make it executable
+RUN dos2unix /usr/local/bin/update-certs.sh && chmod +x /usr/local/bin/update-certs.sh
 
 # Default environment variables
 ENV ACME_JSON_PATH="/acme.json" \
