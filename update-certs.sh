@@ -14,6 +14,7 @@ extract_certs() {
     if [[ -n "$certificate" && -n "$key" ]]; then
         echo "$certificate" | base64 -d > "$CERTS_DIR/fullchain.pem"
         echo "$key" | base64 -d > "$CERTS_DIR/privkey.pem"
+        echo "$ca" | base64 -d > "$CERTS_DIR/ca.pem"
     else
         echo "Failed to find certificates for domain $DOMAIN"
         exit 1
