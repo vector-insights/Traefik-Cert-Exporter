@@ -10,11 +10,9 @@ CERTS_DIR="${CERTS_DIR:-/certs}"
 extract_certs() {
     certificate=$(cat "$ACME_JSON_PATH" | jq -r --arg DOMAIN "$DOMAIN" '.["dns-cloudflare"].Certificates[] | select(.domain.main==$DOMAIN) | .certificate')
     key=$(cat "$ACME_JSON_PATH" | jq -r --arg DOMAIN "$DOMAIN" '.["dns-cloudflare"].Certificates[] | select(.domain.main==$DOMAIN) | .key')
-    ca=$(cat "$ACME_JSON_PATH" | jq -r --arg DOMAIN "$DOMAIN" '.["dns-cloudflare"].Certificates[] | select(.domain.main==$DOMAIN) | .issuerCertificate')
     if [[ -n "$certificate" && -n "$key" ]]; then
         echo "$certificate" | base64 -d > "$CERTS_DIR/fullchain.pem"
         echo "$key" | base64 -d > "$CERTS_DIR/privkey.pem"
-        echo "$ca" | base64 -d > "$CERTS_DIR/ca.pem"
     else
         echo "Failed to find certificates for domain $DOMAIN"
         exit 1
@@ -25,7 +23,7 @@ extract_certs() {
 extract_certs
 
 # Check if the certificates are successfully extracted
-if [[ -f "$CERTS_DIR/fullchain.pem" && -f "$CERTS_DIR/privkey.pem" && -f "$CERTS_DIR/ca.pem" ]]; then
+if [[ -f "$CERTS_DIR/fullchain.pem" && -f "$CERTS_DIR/privkey.pem" ]]; then
     echo "Certificates extracted successfully"
 else
     echo "Failed to extract certificates"
@@ -41,7 +39,7 @@ while true; do
     extract_certs
 
     # Check if the certificates are successfully extracted
-    if [[ -f "$CERTS_DIR/fullchain.pem" && -f "$CERTS_DIR/privkey.pem" && -f "$CERTS_DIR/ca.pem" ]]; then
+    if [[ -f "$CERTS_DIR/fullchain.pem" && -f "$CERTS_DIR/privkey.pem" ]]; then
         echo "Certificates updated successfully"
     else
         echo "Failed to update certificates"
